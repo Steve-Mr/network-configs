@@ -1,4 +1,4 @@
-# ~~ Sakari 的 Linux 网络配置仓库~~
+# ~~Sakari 的 Linux 网络配置仓库~~
 # 现在是 Maary 的 Linux 网络配置仓库了
 
 [使用dae和clash实现的全局代理方案](https://sakari.top/2023/dae-clash/)
