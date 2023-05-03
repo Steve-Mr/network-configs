@@ -30,7 +30,7 @@ log-level: warning
 ipv6: true
 
 external-controller: 0.0.0.0:9090
-external-ui: /etc/clash-meta/yacd-gh-pages # webui 路径
+external-ui: /etc/Clash-Meta/yacd-gh-pages # webui 路径
 secret: ""
 
 profile:
@@ -64,31 +64,75 @@ dns:
 
 proxies:
 
-
 proxy-groups:
-  
-  - {name: 国外流量, <<: *use}
-
-  - {name: 其他流量, type: select, proxies: [国外流量, DIRECT]}
-
-  - {name: 国际流媒体, type: select, proxies: [国外流量, DIRECT]}
-
-  - {name: 大陆流媒体国际版, type: select, proxies: [DIRECT, 国外流量]}
-
-  - {name: Steam, type: select, proxies: [DIRECT, 国外流量]}
-
-  - {name: 国际网站, type: select, proxies: [国外流量, DIRECT]}
-
-  - {name: 大陆流量, type: select, proxies: [DIRECT, 国外流量]}
-
-  - {name: 大陆流媒体, type: select, proxies: [DIRECT, 大陆流量]}
-
-  - {name: 大陆网站, type: select, proxies: [DIRECT, 大陆流量]}
-
-  - {name: Telegram, type: select, proxies: [国外流量, DIRECT]}
-
-  - {name: 特殊节点, <<: *use}
-
+  - 
+    name: 国外流量
+    type: select
+    use: 
+      - sub1
+  - 
+    name: ChatGPT
+    type: select
+    use: 
+      - sub1 
+  - 
+    name: 其他流量
+    type: select
+    proxies: 
+      - 国外流量
+      - DIRECT
+  - 
+    name: 国际流媒体
+    type: select
+    use: 
+      - sub1
+    proxies: 
+      - 国外流量
+      - DIRECT  
+  - 
+    name: 大陆流媒体国际版
+    type: select
+    use: 
+      - sub1
+    proxies: 
+      - DIRECT
+      - 国外流量
+  - 
+    name: Steam
+    type: select
+    proxies: 
+      - 国外流量
+      - DIRECT  
+  - 
+    name: 国际网站
+    type: select
+    proxies: 
+      - 国外流量
+      - DIRECT
+  - 
+    name: 大陆流量
+    type: select
+    proxies: 
+      - DIRECT
+      - 国外流量
+  - 
+    name: 大陆流媒体
+    type: select
+    proxies: 
+      - DIRECT
+      - 国外流量
+  - 
+    name: 大陆网站
+    type: select
+    proxies: 
+      - DIRECT
+      - 国外流量
+  - 
+    name: Telegram
+    type: select
+    proxies: 
+      - 国外流量
+      - DIRECT
 
 rules:
   # Unbreak
@@ -111,6 +155,12 @@ rules:
   - IP-CIDR6,2001:67c:4e8::/48,Telegram,no-resolve
   - IP-CIDR6,2001:b28:f23d::/48,Telegram,no-resolve
   - IP-CIDR6,2001:b28:f23f::/48,Telegram,no-resolve
+  
+  # ChatGpt
+  - DOMAIN-SUFFIX,openai.com,ChatGPT
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,ChatGPT
+  - DOMAIN-SUFFIX,identrust.com,ChatGPT
+  - DOMAIN-SUFFIX,auth0.com,ChatGPT
 
   # (Streaming Media)
   - RULE-SET,Streaming,国际流媒体

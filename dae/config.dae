@@ -1,6 +1,6 @@
 global {
   log_level: warning
-  wan_interface: enp34s0 # 修改
+  wan_interface: wlp4s0 # 修改
   dial_mode: domain
   allow_insecure: false
   auto_config_kernel_parameter: true
