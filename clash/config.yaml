@@ -16,7 +16,7 @@ use: &use
 proxy-providers:
   sub1:
     <<: *p
-    url: "填写处理过的订阅链接" # 修改
+    url: "填写处理过的订阅链接"
     path: ./sub1.yaml
 
 mixed-port: 7890
@@ -95,8 +95,8 @@ proxy-groups:
     use: 
       - sub1
     proxies: 
-      - DIRECT
       - 国外流量
+      - DIRECT
   - 
     name: Steam
     type: select
@@ -133,6 +133,13 @@ proxy-groups:
     proxies: 
       - 国外流量
       - DIRECT
+  - 
+    name: Bard
+    type: select
+    use: 
+      - sub1 
+    proxies: 
+      - 国外流量
 
 rules:
   # Unbreak
@@ -161,6 +168,9 @@ rules:
   - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,ChatGPT
   - DOMAIN-SUFFIX,identrust.com,ChatGPT
   - DOMAIN-SUFFIX,auth0.com,ChatGPT
+  
+  # Bard
+  - DOMAIN-SUFFIX,google.com,Bard
 
   # (Streaming Media)
   - RULE-SET,Streaming,国际流媒体
@@ -198,6 +208,8 @@ rules:
   # - GEOIP,CN,🏠 大陆流量
 
   - MATCH,其他流量
+  
+  - DOMAIN-SUFFIX,googleapis.com,国际网站
 
 rule-providers:
 # name: # Provider 名称

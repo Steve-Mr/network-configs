@@ -41,6 +41,8 @@ routing {
 
   # 需要指定代理的网站或进程
   domain(suffix: bing.com) -> clash
+  domain(suffix: googleapis.com) -> clash
+  domain(suffix: vivaldi.com) -> clash
 
   # 需要指定直连的网站或进程
   domain(suffix: cm.steampowered.com) -> direct
