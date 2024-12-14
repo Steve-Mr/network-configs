@@ -1,9 +1,4 @@
-######### 锚点 start #######
-# proxy 相关
-# pr: &pr {type: select, proxies: [默认, 香港, 台湾, 日本, 新加坡, 美国, 其它地区, 全部节点, 自动选择, DIRECT]}
-
-#这里是订阅更新和延迟测试相关的
-p: &p {type: http, interval: 3600, health-check: {enable: true, url: https://www.gstatic.com/generate_204, interval: 300}}
+p: &p {type: http, interval: 3600, health-check: {enable: true, url: https://cp.cloudflare.com/generate_204, interval: 300}}
 
 use: &use
   type: select
@@ -16,7 +11,8 @@ use: &use
 proxy-providers:
   sub1:
     <<: *p
-    url: "填写处理过的订阅链接"
+    url: "" # 修改
+    interval: 3600
     path: ./sub1.yaml
 
 mixed-port: 7890
@@ -26,41 +22,206 @@ allow-lan: true
 bind-address: "*"
 find-process-mode: strict
 mode: rule
-log-level: warning
+log-level: info
 ipv6: true
 
-external-controller: 0.0.0.0:9090
-external-ui: /etc/Clash-Meta/yacd-gh-pages # webui 路径
+geox-url:
+  geoip: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat
+  geosite: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat
+  mmdb: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb
+geo-auto-update: true
+geo-update-interval: 24
+
+external-controller: 127.0.0.1:9090
+external-ui: /etc/mihomo/ui # webui 路径
 secret: ""
 
 profile:
   store-selected: true
   store-fake-ip: true
 
+routing-mark: 6666
+
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports:
+      - 80
+      - 8080-8880
+      override-destination: true
+    TLS:
+      ports:
+      - 443
+      - 8443
+    QUIC:
+      ports:
+      - 443
+      - 8443
+  force-domain:
+  - +.v2ex.com
+  skip-domain:
+  - Mijia Cloud
+
 dns:
   enable: true
-  listen: 0.0.0.0:1053
+  prefer-h3: true
+  listen: 0.0.0.0:53
   ipv6: true
-  enhanced-mode: redir-host
-  fake-ip-range: 28.0.0.1/8
-  fake-ip-filter:
-    - '*.lan'
-    - localhost.ptlogin2.qq.com
-    - '*.msftconnecttest.com'
-    - '*.msftncsi.com'
-    - '*.srv.nintendo.net'
-    - '*.stun.playstation.net'
-    - 'xbox.*.microsoft.com'
-    - '*.xboxlive.com'
-    - '*.logon.battlenet.com.cn'
-    - '*.logon.battle.net'
-    - stun.l.google.com
   default-nameserver:
-    - 119.29.29.29
-    - 223.5.5.5
+  - https://1.12.12.12/dns-query
+  - https://223.5.5.5/dns-query
+  - 119.29.29.29
+  - 223.5.5.5
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+  - '*.lan'
+  - '*.localdomain'
+  - '*.example'
+  - '*.invalid'
+  - '*.localhost'
+  - '*.test'
+  - '*.local'
+  - '*.home.arpa'
+  - time.*.com
+  - time.*.gov
+  - time.*.edu.cn
+  - time.*.apple.com
+  - time1.*.com
+  - time2.*.com
+  - time3.*.com
+  - time4.*.com
+  - time5.*.com
+  - time6.*.com
+  - time7.*.com
+  - ntp.*.com
+  - ntp1.*.com
+  - ntp2.*.com
+  - ntp3.*.com
+  - ntp4.*.com
+  - ntp5.*.com
+  - ntp6.*.com
+  - ntp7.*.com
+  - '*.time.edu.cn'
+  - '*.ntp.org.cn'
+  - +.pool.ntp.org
+  - time1.cloud.tencent.com
+  - music.163.com
+  - '*.music.163.com'
+  - '*.126.net'
+  - musicapi.taihe.com
+  - music.taihe.com
+  - songsearch.kugou.com
+  - trackercdn.kugou.com
+  - '*.kuwo.cn'
+  - api-jooxtt.sanook.com
+  - api.joox.com
+  - joox.com
+  - y.qq.com
+  - '*.y.qq.com'
+  - streamoc.music.tc.qq.com
+  - mobileoc.music.tc.qq.com
+  - isure.stream.qqmusic.qq.com
+  - dl.stream.qqmusic.qq.com
+  - aqqmusic.tc.qq.com
+  - amobile.music.tc.qq.com
+  - '*.xiami.com'
+  - '*.music.migu.cn'
+  - music.migu.cn
+  - '*.msftconnecttest.com'
+  - '*.msftncsi.com'
+  - msftconnecttest.com
+  - msftncsi.com
+  - localhost.ptlogin2.qq.com
+  - localhost.sec.qq.com
+  - +.srv.nintendo.net
+  - +.stun.playstation.net
+  - xbox.*.microsoft.com
+  - xnotify.xboxlive.com
+  - +.battlenet.com.cn
+  - +.wotgame.cn
+  - +.wggames.cn
+  - +.wowsgame.cn
+  - +.wargaming.net
+  - proxy.golang.org
+  - stun.*.*
+  - stun.*.*.*
+  - +.stun.*.*
+  - +.stun.*.*.*
+  - +.stun.*.*.*.*
+  - heartbeat.belkin.com
+  - '*.linksys.com'
+  - '*.linksyssmartwifi.com'
+  - '*.router.asus.com'
+  - mesu.apple.com
+  - swscan.apple.com
+  - swquery.apple.com
+  - swdownload.apple.com
+  - swcdn.apple.com
+  - swdist.apple.com
+  - lens.l.google.com
+  - stun.l.google.com
+  - +.nflxvideo.net
+  - '*.square-enix.com'
+  - '*.finalfantasyxiv.com'
+  - '*.ffxiv.com'
+  - '*.mcdn.bilivideo.cn'
+  use-hosts: true
   nameserver:
+  - https://doh.pub/dns-query
+  - https://dns.alidns.com/dns-query
+  - 119.29.29.29
+  - 223.5.5.5
+  fallback:
+  - "https://dns.google/dns-query#\U0001F310 国外流量"
+  - "https://cloudflare-dns.com/dns-query#\U0001F310 国外流量"
+  - "8.8.8.8#\U0001F310 国外流量"
+  - "1.1.1.1#\U0001F310 国外流量"
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+    - 0.0.0.0/8
+    - 10.0.0.0/8
+    - 100.64.0.0/10
+    - 127.0.0.0/8
+    - 169.254.0.0/16
+    - 172.16.0.0/12
+    - 192.0.0.0/24
+    - 192.0.2.0/24
+    - 192.88.99.0/24
+    - 192.168.0.0/16
+    - 198.18.0.0/15
+    - 198.51.100.0/24
+    - 203.0.113.0/24
+    - 224.0.0.0/4
+    - 240.0.0.0/4
+    - 255.255.255.255/32
+    domain:
+    - +.google.com
+    - +.facebook.com
+    - +.youtube.com
+    - +.githubusercontent.com
+    - +.googlevideo.com
+  nameserver-policy:
+    rule-set:Direct,ChinaMedia,China:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
     - 119.29.29.29
     - 223.5.5.5
+    rule-set:Lan:
+    - system
+    geosite:cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    - 119.29.29.29
+    - 223.5.5.5
+    geosite:private:
+    - system
 
 proxies:
 
@@ -74,7 +235,7 @@ proxy-groups:
     name: ChatGPT
     type: select
     use: 
-      - sub1 
+      - sub1
   - 
     name: 其他流量
     type: select
@@ -98,7 +259,7 @@ proxy-groups:
       - 国外流量
       - DIRECT
   - 
-    name: Steam
+    name: 游戏平台
     type: select
     proxies: 
       - 国外流量
@@ -134,18 +295,34 @@ proxy-groups:
       - 国外流量
       - DIRECT
   - 
+    name: BA
+    type: select
+    use:
+      #- sub3
+      - sub1
+    proxies: 
+      - 国外流量
+  - 
     name: Bard
     type: select
     use: 
-      - sub1 
+      - sub1
     proxies: 
       - 国外流量
 
 rules:
-  # Unbreak
-  - RULE-SET,Unbreak,DIRECT
+  - RULE-SET,Direct,DIRECT
+  - "RULE-SET,GlobalMedia,国际流媒体"
+  - "RULE-SET,AsianMedia,大陆流媒体国际版"
+  - "RULE-SET,Game,游戏平台"
+  - "RULE-SET,Global,国际网站"
+  - "RULE-SET,ChinaMedia,大陆流媒体"
+  - "RULE-SET,China,大陆网站"
+  - RULE-SET,Lan,DIRECT
+  - "RULE-SET,ChinaIPs,大陆流量"
+  - "MATCH,其他流量"
 
-  # User definied rules
+  - DOMAIN-SUFFIX,uinio.com,国外流量
 
   # Global Area Network
   #
@@ -168,27 +345,30 @@ rules:
   - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,ChatGPT
   - DOMAIN-SUFFIX,identrust.com,ChatGPT
   - DOMAIN-SUFFIX,auth0.com,ChatGPT
+  - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
   
   # Bard
   - DOMAIN-SUFFIX,google.com,Bard
-
-  # (Streaming Media)
-  - RULE-SET,Streaming,国际流媒体
-
-  # (StreamingSE)
-  - RULE-SET,StreamingSE,大陆流媒体国际版
-
-  # (Steam)
-  - RULE-SET,Steam,Steam
-
-  # (DNS Cache Pollution) / (IP Blackhole) / (Region-Restricted Access Denied) / (Network Jitter)
-  - RULE-SET,Global,国际网站
-
-  # (StreamingCN)
-  - RULE-SET,StreamingCN,大陆流媒体
-
-  # China Area Network
-  - RULE-SET,China,大陆网站
+  - DOMAIN,ai.google.dev,Bard
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,Bard
+  - DOMAIN,makersuite.google.com,Bard
+  - DOMAIN-SUFFIX,bard.google.com,Bard
+  - DOMAIN-SUFFIX,deepmind.com,Bard
+  - DOMAIN-SUFFIX,deepmind.google,Bard
+  - DOMAIN-SUFFIX,gemini.google.com,Bard
+  - DOMAIN-SUFFIX,generativeai.google,Bard
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,Bard
+  - DOMAIN-SUFFIX,apis.google.com,Bard
+  - DOMAIN-KEYWORD,colab,Bard
+  - DOMAIN-KEYWORD,developerprofiles,Bard
+  - DOMAIN-KEYWORD,generativelanguage,Bard
+  - DOMAIN,mtalk.google.com,大陆网站
+  
+  - DOMAIN,fonts.googleapis.com,Bard
+  
+  - DOMAIN-SUFFIX,nexon.com,BA
+  - DOMAIN-SUFFIX,nexon.io,BA
+  - DOMAIN-SUFFIX,nexoncdn.co.kr,BA
 
   # Local Area Network
   - IP-CIDR,192.168.0.0/16,DIRECT
@@ -198,9 +378,8 @@ rules:
   - IP-CIDR,100.64.0.0/10,DIRECT
   - IP-CIDR,224.0.0.0/4,DIRECT
   - IP-CIDR,fe80::/10,DIRECT
+  
 
-  # （可选）使用来自 ipipdotnet 的 ChinaIP 以解决数据不准确的问题，使用 ChinaIP.yaml 时可禁用下列直至（包括）「GEOIP,CN」规则
-  - RULE-SET,ChinaIP,大陆流量
   # Tencent
   # - IP-CIDR,119.28.28.28/32,🏠 大陆流量
   # - IP-CIDR,182.254.116.0/24,🏠 大陆流量
@@ -209,68 +388,61 @@ rules:
 
   - MATCH,其他流量
   
-  - DOMAIN-SUFFIX,googleapis.com,国际网站
+  # - DOMAIN-SUFFIX,googleapis.com,国际网站
 
 rule-providers:
-# name: # Provider 名称
-#   type: http # http 或 file
-#   behavior: classical # 或 ipcidr、domain
-#   path: # 文件路径
-#   url: # 只有当类型为 HTTP 时才可用，您不需要在本地空间中创建新文件。
-#   interval: # 自动更新间隔，仅在类型为 HTTP 时可用
-
-  Unbreak:
+  Direct:
     type: http
     behavior: classical
-    path: ./RuleSet/Unbreak.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/Unbreak.yaml
+    path: ./RuleSet/Direct.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/Direct/Direct.yaml
     interval: 86400
-
-  Streaming:
+  GlobalMedia:
     type: http
     behavior: classical
-    path: ./RuleSet/StreamingMedia/Streaming.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/StreamingMedia/Streaming.yaml
+    path: ./RuleSet/GlobalMedia.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/GlobalMedia/GlobalMedia_Classical.yaml
     interval: 86400
-
-  StreamingSE:
+  AsianMedia:
     type: http
     behavior: classical
-    path: ./RuleSet/StreamingMedia/StreamingSE.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/StreamingMedia/StreamingSE.yaml
+    path: ./RuleSet/AsianMedia.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/AsianMedia/AsianMedia.yaml
     interval: 86400
-
-  StreamingCN:
+  Game:
     type: http
     behavior: classical
-    path: ./RuleSet/StreamingMedia/StreamingCN.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/StreamingMedia/StreamingCN.yaml
+    path: ./RuleSet/Game.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/Game/Game.yaml
     interval: 86400
-
-  Steam:
-    type: http
-    behavior: classical
-    path: ./RuleSet/Extra/Game/Steam.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/Extra/Game/Steam.yaml
-    interval: 86400
-
   Global:
     type: http
     behavior: classical
     path: ./RuleSet/Global.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/Global.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/Global/Global_Classical.yaml
     interval: 86400
-
+  ChinaMedia:
+    type: http
+    behavior: classical
+    path: ./RuleSet/ChinaMedia.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/ChinaMedia/ChinaMedia.yaml
+    interval: 86400
   China:
     type: http
     behavior: classical
     path: ./RuleSet/China.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/DivineEngine/Profiles/master/Clash/RuleSet/China.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/China/China_Classical.yaml
     interval: 86400
-
-  ChinaIP:
+  Lan:
     type: http
-    behavior: ipcidr
-    path: ./RuleSet/Extra/ChinaIP.yaml
-    url: https://ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt
+    behavior: classical
+    path: ./RuleSet/Lan.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/Lan/Lan.yaml
     interval: 86400
+  ChinaIPs:
+    type: http
+    behavior: classical
+    path: ./RuleSet/ChinaIPs.yaml
+    url: https://resource.touhou.center/ios_rule_script/rule/Clash/ChinaIPs/ChinaIPs_Classical.yaml
+    interval: 86400
+...

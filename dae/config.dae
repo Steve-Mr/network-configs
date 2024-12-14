@@ -1,21 +1,24 @@
 global {
-  log_level: warning
+  log_level: log
+  lan_interface: docker0
   wan_interface: wlp4s0 # 修改
-  dial_mode: domain
+  dial_mode: domain++
   allow_insecure: false
   auto_config_kernel_parameter: true
 }
 node {
-  clash: 'http://localhost:7890'
+  clash: 'socks5://localhost:7890'
 }
 dns {
-  upstream {
-    alidns: 'udp://dns.alidns.com:53'
-    googledns: 'tcp+udp://dns.google.com:53'
-  }
-  routing {
+  upstream { 
+     alidns: 'tcp+udp://dns.alidns.com:53'
+#    googledns: 'tcp+udp://dns.google.com:53'
+     googledns: 'tcp://dns.google.com:53'
+    }
+    routing {
     request {
       fallback: alidns
+      # fallback: googledns
     }
     response {
       upstream(googledns) -> accept
@@ -36,18 +39,48 @@ routing {
 
   # clash 代理客户端直连，防止网络回环
   pname(clash) -> must_direct
+  pname(mihomo) -> must_direct
   pname(clash-meta) -> must_direct
-  pname(qemu-system-x86) -> must_direct
+  pname(qemu-system-x86_) -> clash
+  pname(sunloginclient) -> must_direct
+  # pname(docker) -> clash
 
   # 需要指定代理的网站或进程
   domain(suffix: bing.com) -> clash
-  domain(suffix: googleapis.com) -> clash
-  domain(suffix: vivaldi.com) -> clash
+  domain(suffix: fonts.googleapis.com) -> clash
+  domain(suffix: taobao.com) -> must_direct
+  # domain(suffix: google.com) -> clash
+  # domain(suffix: gstatic.com) -> clash
+  # domain(suffix: vivaldi.com) -> clash
+  pname(jetBrains-toolbox)->clash
+  pname(java)->clash
+  pname(jetBrains-studio)->clash
+  # pname(heroic)->clash
+  # domain(suffix: ieee.org) -> direct
+  domain(zzu.edu.cn) -> direct
+  domain(vpn358.com) -> direct
+  domain(163.com) -> direct
+  domain(gamer.com.tw) -> clash
+  domain(suffix: recaptcha.com) -> clash
+  domain(suffix: uinio.com) -> clash
+  pname(msedge) -> clash
+  domain(suffix: sstatic.net) -> clash
+  domain(suffix: githubusercontent.com) -> clash
+  domain(suffix: github.com) -> clash
+  
+  pname(com.nexon.bluearchive) -> clash
+
+  domain(suffix:nexon.com) -> clash
+  domain(suffix:nexon.io) -> clash
+  domain(suffix:nexoncdn.co.kr) -> clash
 
   # 需要指定直连的网站或进程
   domain(suffix: cm.steampowered.com) -> direct
   domain(suffix: steamserver.net) -> direct
   pname(qbittorrent) -> direct
+  
+  dip(172.19.1.1) -> direct
+  dip(59.0.0.0/8) -> direct
 
   dip(224.0.0.0/3, 'ff00::/8') -> direct
   dip(geoip:private) -> direct
